@@ -30,3 +30,4 @@ node_modules/
 jago-backend/node_modules/
 npm-debug.log*
 *.log
+.idea/
