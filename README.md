@@ -1,80 +1,89 @@
-# Adivan JAGO Backend
+# Adivan — Tribal Scholarships
 
-OpenAI proxy for the **JAGO** scholarship assistant in the Adivan Android app. The mobile client calls this service; the OpenAI API key stays on the server only.
+Monorepo for the **Adivan** prototype: Android app (tribal scholarship management) and the **JAGO** OpenAI proxy backend.
 
-## Endpoints
+| Component | Path | Description |
+|-----------|------|-------------|
+| Android app | Repository root (`app/`, Gradle files) | Kotlin, Jetpack Compose, Material 3 |
+| JAGO backend | `jago-backend/` | Node.js API for the in-app chatbot |
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Health check (`{ "status": "ok" }`) |
-| `POST` | `/api/chat` | Chat completion (see below) |
+**Application ID:** `com.example.adivan`
 
-### `POST /api/chat`
+## Project structure
 
-**Request**
-
-```json
-{
-  "message": "What documents do I need?",
-  "conversation": [
-    { "role": "user", "content": "Hello" },
-    { "role": "assistant", "content": "Hi! How can I help?" }
-  ],
-  "appContext": {}
-}
+```
+Adivan_Scholarship/          # clone root (open this folder in Android Studio)
+├── app/                     # Android application module
+├── gradle/
+├── jago-backend/            # JAGO chat API (Express + OpenAI)
+│   ├── server.js
+│   ├── package.json
+│   └── README.md            # Backend-only docs
+├── build.gradle.kts
+├── settings.gradle.kts
+├── gradlew
+└── README.md                # This file
 ```
 
-**Response**
+## Clone the repository
 
-```json
-{
-  "reply": "..."
-}
+```bash
+git clone https://github.com/TaranjitSingh05/Adivan_Scholarship.git
+cd Adivan_Scholarship
 ```
 
-## Local setup
+## Run the Android app
 
-1. Install [Node.js](https://nodejs.org/) 18 or newer.
-2. Copy the example env file and set your key:
+1. Install **Android Studio** (JDK 11+).
+2. **File → Open** → select the **repository root** (the folder that contains `app/` and `jago-backend/`).
+3. Wait for Gradle sync.
+4. Use an emulator (API 24+) or a physical device.
+5. Run the **app** configuration.
 
-   ```bash
-   cp .env.example .env
-   ```
+From the command line (with `JAVA_HOME` set):
 
-   Edit `.env` and set `OPENAI_API_KEY`. **Do not commit `.env`.**
+```bash
+./gradlew assembleDebug
+```
 
-3. Install dependencies and start:
+Debug APK: `app/build/outputs/apk/debug/`
 
-   ```bash
-   npm install
-   npm start
-   ```
+### JAGO API URL on a physical device
 
-4. Verify:
+The app talks to the backend over HTTP. For local development, point the app at your machine’s LAN IP or a deployed backend (see `jago-backend/README.md` and Android `JagoEndpoint` / Gradle `jago.dev.host` in `local.properties`).
 
-   ```bash
-   curl http://localhost:3000/health
-   ```
+## Run the JAGO backend
 
-The server listens on `0.0.0.0` and uses `process.env.PORT || 3000`.
+```bash
+cd jago-backend
+cp .env.example .env
+# Edit .env and set OPENAI_API_KEY (never commit .env)
+npm install
+npm start
+```
 
-## Environment variables
+- Health: `GET http://localhost:3000/health`
+- Chat: `POST http://localhost:3000/api/chat`
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `OPENAI_API_KEY` | Yes | OpenAI API key (server only) |
-| `PORT` | No | HTTP port (default `3000`; Render sets this automatically) |
-
-## Deploy on Render (Web Service)
-
-1. Push this repository to GitHub.
-2. In [Render](https://render.com/), create a **Web Service** connected to the repo.
-3. **Build command:** `npm install`
-4. **Start command:** `npm start`
-5. Add environment variable `OPENAI_API_KEY` in the Render dashboard (not in the repo).
-6. After deploy, use the Render URL as the Android app’s JAGO base URL (e.g. `https://your-service.onrender.com`).
+Details: [jago-backend/README.md](jago-backend/README.md)
 
 ## Security
 
-- Never put `OPENAI_API_KEY` in source code, Git, or the Android app.
-- `.env` is listed in `.gitignore` and must not be pushed.
+- **Do not commit** `local.properties`, `.env`, or API keys.
+- The OpenAI key belongs **only** on the server (`OPENAI_API_KEY` in `jago-backend/.env` or your host’s environment).
+
+## Tech stack (Android)
+
+| Area | Choice |
+|------|--------|
+| Language | Kotlin |
+| UI | Jetpack Compose + Material 3 |
+| Navigation | Navigation Compose |
+| Min / target SDK | 24 / 37 |
+
+## Team workflow
+
+1. Clone once from GitHub.
+2. Open the **repo root** in Android Studio for app work.
+3. Run `jago-backend` separately when testing JAGO chat (local or deployed URL).
+4. Keep secrets in `.env` / `local.properties` (gitignored).

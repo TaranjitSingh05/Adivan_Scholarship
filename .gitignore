@@ -1,5 +1,32 @@
-node_modules/
-.env
+# Android / Gradle
+*.iml
+.gradle/
+build/
+app/build/
+captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+
+# Android Studio (machine-specific)
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Secrets — never commit
+.env
+**/.env
+local.properties
+
+# Node.js (JAGO backend)
+node_modules/
+jago-backend/node_modules/
 npm-debug.log*
 *.log
