@@ -41,7 +41,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        // Emulator uses 10.0.2.2 at runtime. A physical device uses this LAN address.
+        // Debug: JagoEndpoint uses JAGO_LAN_HOST (or emulator 10.0.2.2). Release overrides JAGO_BASE_URL.
+        buildConfigField("String", "JAGO_BASE_URL", "\"\"")
         buildConfigField("String", "JAGO_LAN_HOST", "\"${devLanHost()}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -49,6 +50,11 @@ android {
 
     buildTypes {
         release {
+            buildConfigField(
+                "String",
+                "JAGO_BASE_URL",
+                "\"https://adivan-scholarship-backend.onrender.com/\"",
+            )
             optimization {
                 enable = false
             }

@@ -5,6 +5,10 @@ import com.example.adivan.BuildConfig
 
 object JagoEndpoint {
     fun baseUrl(): String {
+        val configured = BuildConfig.JAGO_BASE_URL.trim()
+        if (configured.isNotEmpty()) {
+            return if (configured.endsWith("/")) configured else "$configured/"
+        }
         val host = if (isEmulator()) "10.0.2.2" else BuildConfig.JAGO_LAN_HOST
         return "http://$host:3000/"
     }
