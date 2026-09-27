@@ -4,10 +4,13 @@ import android.os.Build
 import com.example.adivan.BuildConfig
 
 object JagoEndpoint {
+    private const val PRODUCTION_BASE_URL = "https://adivan-scholarship-backend.onrender.com/"
+
     fun baseUrl(): String {
-        val configured = BuildConfig.JAGO_BASE_URL.trim()
-        if (configured.isNotEmpty()) {
-            return if (configured.endsWith("/")) configured else "$configured/"
+        if (!BuildConfig.DEBUG) {
+            val configured = BuildConfig.JAGO_BASE_URL.trim()
+            val production = if (configured.isNotEmpty()) configured else PRODUCTION_BASE_URL
+            return if (production.endsWith("/")) production else "$production/"
         }
         val host = if (isEmulator()) "10.0.2.2" else BuildConfig.JAGO_LAN_HOST
         return "http://$host:3000/"
